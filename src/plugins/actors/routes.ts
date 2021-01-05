@@ -26,6 +26,12 @@ interface PayloadActor {
   name: string
   bio: string
   bornAt: Date
+  filmography?:actors.ActorFilmographyInput[]
+}
+interface PayloadActorFilmography {
+  movie: number
+  actor: number
+  plays: string
 }
 
 const validatePayloadActor: RouteOptionsResponseSchema = {
@@ -33,6 +39,18 @@ const validatePayloadActor: RouteOptionsResponseSchema = {
     name: joi.string().required(),
     bio: joi.string().required(),
     bornAt: joi.date().required(),
+    filmography: joi.array().items(
+      joi.object({
+        movie:joi.number().required().min(1),
+        plays:joi.string().required()
+      }))
+  })
+}
+const validatePayloadActorFilmography: RouteOptionsResponseSchema = {
+  payload: joi.object({
+    actor:joi.number().required().min(1),
+    movie:joi.number().required().min(1),
+    plays:joi.string().required()
   })
 }
 
@@ -55,7 +73,8 @@ export const actorRoutes: ServerRoute[] = [{
   path: '/actors',
   handler: post,
   options: { validate: validatePayloadActor },
-},{
+},
+{
   method: 'GET',
   path: '/actors/{id}',
   handler: get,
@@ -69,6 +88,30 @@ export const actorRoutes: ServerRoute[] = [{
   method: 'DELETE',
   path: '/actors/{id}',
   handler: remove,
+  options: { validate: validateParamsId },
+},
+{
+  method: 'GET',
+  path: '/actors/{id}/filmography',
+  handler: getFilmography,
+  options: { validate: validateParamsId },
+},
+{
+  method: 'GET',
+  path: '/actors/{id}/moviesCountByGenre',
+  handler: getMoviesCountByGenre,
+  options: { validate: validateParamsId },
+},
+{
+  method: 'POST',
+  path: '/actors/filmography',
+  handler: addToFilmography,
+  options: { validate: validatePayloadActorFilmography },
+},
+{
+  method: 'DELETE',
+  path: '/actors/filmography/{id}',
+  handler: removeFilmography,
   options: { validate: validateParamsId },
 },]
 
@@ -85,10 +128,10 @@ async function get(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lif
 }
 
 async function post(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
-  const { name,bio,bornAt} = (req.payload as PayloadActor)
+  const { name,bio,bornAt,filmography} = (req.payload as PayloadActor)
 
   try {
-    const id = await actors.create({ name,bio,bornAt })
+    const id = await actors.create({ name,bio,bornAt,filmography })
     const result = {
       id,
       path: `${req.route.path}/${id}`
@@ -100,6 +143,7 @@ async function post(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lif
     return Boom.conflict()
   }
 }
+
 
 async function put(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
   const { id } = (req.params as ParamsId)
@@ -118,4 +162,44 @@ async function remove(req: Request, h: ResponseToolkit, _err?: Error): Promise<L
   const { id } = (req.params as ParamsId)
 
   return await actors.remove(id) ? h.response().code(204) : Boom.notFound()
+}
+
+
+
+async function getFilmography(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
+  const { id } = (req.params as ParamsId)
+
+  const found:{movie:number;plays:string;genre:string}[] = await actors.filmography(id)
+  return found || Boom.notFound()
+}
+
+async function addToFilmography(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
+  const { actor,movie,plays} = (req.payload as PayloadActorFilmography)
+
+  try {
+    const id = await actors.addToFilmography({ actor,movie,plays})
+    const result = {
+      id,
+      path: `${req.route.path}/${id}`
+    }
+    return h.response(result).code(201)
+  }
+  catch(er: unknown){
+    if(!isHasCode(er) || er.code !== 'ER_DUP_ENTRY') throw er
+    return Boom.conflict()
+  }
+}
+
+async function removeFilmography(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
+  const { id } = (req.params as ParamsId)
+
+  return await actors.removeFromFilmography(id) ? h.response().code(204) : Boom.notFound()
+}
+
+
+async function getMoviesCountByGenre(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
+  const { id } = (req.params as ParamsId)
+
+  const found:{genre:string; numMovies:number}[] = await actors.moviesCountByGenre(id)
+  return found || Boom.notFound()
 }
