@@ -109,10 +109,9 @@ async function post(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lif
 
 async function put(req: Request, h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
   const { id } = (req.params as ParamsId)
-  const { name,synopsis,releasedAt,runtime,genre } = (req.payload as PayloadMovie)
 
   try {
-    return await movies.update(id, { name,synopsis,releasedAt,runtime,genre }) ? h.response().code(204) : Boom.notFound()
+    return await movies.update(id, req.payload as PayloadMovie) ? h.response().code(204) : Boom.notFound()
   }
   catch(er: unknown){
     if(!isHasCode(er) || er.code !== 'ER_DUP_ENTRY') throw er
