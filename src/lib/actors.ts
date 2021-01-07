@@ -1,7 +1,4 @@
-import Knex from 'knex'
 import { knex } from '../util/knex'
-import { Movie } from './movies'
-
 export interface ActorFilmographyInput{
   movie:number
   plays:string
@@ -46,6 +43,7 @@ export async function create(input: ActorCreateInput): Promise<number> {
     return id
 
   })
+
 }
 
 /** @returns whether the ID was actually found */
@@ -67,7 +65,7 @@ export async function addToFilmography(input: ActorFilmographyInput & {actor:num
 
 /** @returns whether the ID was actually found */
 export async function removeFromFilmography(id: number): Promise<boolean> {
-  const count = await knex.from('actor').where({ id }).delete()
+  const count = await knex.from('movieActor').where({ id }).delete()
   return count > 0
 }
 

@@ -184,6 +184,7 @@ async function addToFilmography(req: Request, h: ResponseToolkit, _err?: Error):
     return h.response(result).code(201)
   }
   catch(er: unknown){
+    console.log(er)
     if(!isHasCode(er) || er.code !== 'ER_DUP_ENTRY') throw er
     return Boom.conflict()
   }
