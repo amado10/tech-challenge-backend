@@ -35,6 +35,7 @@ Movie payload:
 }
 ```
 
+A: /movies
 ### MG-0003 Add `Actor` CRUD
 Actor payload:
 
@@ -47,10 +48,47 @@ Actor payload:
 }
 ```
 
+A: /actors 
 
 ### MG-0004 View Actor's movie appearances
 
 As a user, I want to get a list of movies that a given Actor starred on.
+
+In order to create a list of movies in which a given Actor starred on:
+  
+  1. Send additionaly on actor create payload :
+     ```ts
+     {
+      filmography:[
+        {
+          movie: number,
+          plays: string
+        },
+        {
+          movie: number,
+          plays: string
+        },
+      ]
+     }  
+     ```
+  2. Add to an existent actor:
+    
+    POST /actors/filmography
+     ```ts
+     {
+      actor: number,
+      movie: number,
+      plays: string
+     }  
+     ```
+  3. You can also remove:
+    
+    DELETE /actors/filmography/:id
+
+A: For retrieving the list of movies of a given actor:
+
+    GET /actors/:id/filmography
+
 
 ### MG-0005. Select one of the following:
 
@@ -61,6 +99,8 @@ Business Rule: the favorite genre is the one with the most appearances.
 2. View Actor's number of Movies in Genres
 As a user, I want to get the number of movies by genre on an actor profile page.
 
+A: GET  /actors/:id/moviesCountByGenre
+
 3. View Actors in a Genre
 As a user, I want to get a list of actors for a given Genre ordered by movie appearances.
 
@@ -68,6 +108,9 @@ As a user, I want to get a list of actors for a given Genre ordered by movie app
 
 As a user, I want to get a list of character names of a given Actor.
 
+A: When the output of the movie filmography of a given actor also contains the answer to this.
+   
+   GET /actors/:id/filmography
 
 ## Development notes
 
