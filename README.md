@@ -87,7 +87,7 @@ In order to create a list of movies in which a given Actor starred on:
 
 A: For retrieving the list of movies of a given actor:
 
-    GET /actors/:id/filmography
+  GET /actors/:id/filmography
 
 
 ### MG-0005. Select one of the following:
@@ -99,7 +99,7 @@ Business Rule: the favorite genre is the one with the most appearances.
 2. View Actor's number of Movies in Genres
 As a user, I want to get the number of movies by genre on an actor profile page.
 
-A: GET  /actors/:id/moviesCountByGenre
+  A: GET  /actors/:id/moviesCountByGenre
 
 3. View Actors in a Genre
 As a user, I want to get a list of actors for a given Genre ordered by movie appearances.
@@ -108,11 +108,17 @@ As a user, I want to get a list of actors for a given Genre ordered by movie app
 
 As a user, I want to get a list of character names of a given Actor.
 
-A: When the output of the movie filmography of a given actor also contains the answer to this.
+A: The output of the movie filmography of a given actor also contains the character he plays.
    
-   GET /actors/:id/filmography
+  GET /actors/:id/filmography
 
 ## Development notes
+
+Made the following assumptions:
+  1. An Actor can only star once per movie (can't play multiple characters).
+  2. Multiple movies can have the same name.
+  3. Multiple actors can have the same name.
+  4. The creation of an actor filmography could be done in other ways, I just choose one of them to be able to create content.
 
 ### Prerequisites
 
