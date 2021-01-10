@@ -59,16 +59,11 @@ In order to create a list of movies in which a given Actor starred on:
   1. Send additionaly on actor create payload :
      ```ts
      {
-      filmography:[
+      filmography?:
         {
           movie: number,
           plays: string
-        },
-        {
-          movie: number,
-          plays: string
-        },
-      ]
+        }[]
      }  
      ```
   2. Add to an existent actor:
