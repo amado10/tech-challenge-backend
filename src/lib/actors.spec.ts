@@ -5,7 +5,7 @@ import sinon from 'sinon'
 export const lab = script()
 const { beforeEach, before, after, afterEach, describe, it } = lab
 
-import { list, find, remove, create, update, filmography, moviesCountByGenre, removeFromFilmography, addToFilmography } from './actors'
+import { list, find, remove, create, update,filmographyById, filmographyByActor, moviesCountByGenre, removeFromFilmography, addToFilmography } from './actors'
 import { knex } from '../util/knex'
 
 describe('lib', () => describe('actor', () => {
@@ -86,7 +86,7 @@ describe('lib', () => describe('actor', () => {
       if(!isContext(context)) throw TypeError()
       const anyId = 123
 
-      await filmography(anyId)
+      await filmographyByActor(anyId)
       sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'actorFilmography')
       sinon.assert.calledOnceWithExactly(context.stub.knex_where, { actor: anyId })
       sinon.assert.calledOnce(context.stub.knex_select)
@@ -101,6 +101,15 @@ describe('lib', () => describe('actor', () => {
       sinon.assert.calledOnceWithExactly(context.stub.knex_raw, rawQuery)
     })
 
+    it('returns rows from table `movieActor`, by `id`', async ({context}: Flags) => {
+      if(!isContext(context)) throw TypeError()
+      const anyId = 123
+
+      await filmographyById(anyId)
+      sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'movieActor')
+      sinon.assert.calledOnceWithExactly(context.stub.knex_where, { id: anyId })
+      sinon.assert.calledOnce(context.stub.knex_select)
+    })
   })
 
   describe('remove', () => {

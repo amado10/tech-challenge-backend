@@ -93,6 +93,12 @@ export const actorRoutes: ServerRoute[] = [{
 {
   method: 'GET',
   path: '/actors/{id}/filmography',
+  handler: getActorFilmography,
+  options: { validate: validateParamsId },
+},
+{
+  method: 'GET',
+  path: '/actors/filmography/{id}',
   handler: getFilmography,
   options: { validate: validateParamsId },
 },
@@ -164,11 +170,16 @@ async function remove(req: Request, h: ResponseToolkit, _err?: Error): Promise<L
 }
 
 
+async function getActorFilmography(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
+  const { id } = (req.params as ParamsId)
 
+  const found:{id:number;movie:string;plays:string;genre:string}[] = await actors.filmographyByActor(id)
+  return found || Boom.notFound()
+}
 async function getFilmography(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
   const { id } = (req.params as ParamsId)
 
-  const found:{id:number;movie:number;plays:string;genre:string}[] = await actors.filmography(id)
+  const found:{id:number;movie:number;actor:number;plays:string}[] = await actors.filmographyById(id)
   return found || Boom.notFound()
 }
 

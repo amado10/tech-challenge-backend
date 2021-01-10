@@ -90,19 +90,12 @@ A: For retrieving the list of movies of a given actor:
   GET /actors/:id/filmography
 
 
-### MG-0005. Select one of the following:
+### MG-0005. View Actor's number of Movies in Genres:
 
-1. View Actor's favorite genre
-As a user, I want to get the favorite genre of a given Actor.
-Business Rule: the favorite genre is the one with the most appearances.
-
-2. View Actor's number of Movies in Genres
+View Actor's number of Movies in Genres
 As a user, I want to get the number of movies by genre on an actor profile page.
 
-  A: GET  /actors/:id/moviesCountByGenre
-
-3. View Actors in a Genre
-As a user, I want to get a list of actors for a given Genre ordered by movie appearances.
+A: GET  /actors/:id/moviesCountByGenre
 
 ### MG-0006. View Actor's character names
 
@@ -118,9 +111,9 @@ Made the following assumptions:
   1. An Actor can only star once per movie (can't play multiple characters).
   2. Multiple movies can have the same name.
   3. Multiple actors can have the same name.
-  4. The creation of an actor filmography could be done in other ways, I just choose one of them to be able to create content.
+  4. The creation of an actor filmography could be done in multiple ways, I just choose one of them to be able to create content.
   5. If an actor is deleted, his filmography (appearances) are deleted as well.
-  6. If an movie is deleted, the actors appearances on the given movie are deleted as well.
+  6. If a movie is deleted, the actors appearances on the given movie are deleted as well.
 
 ### Prerequisites
 

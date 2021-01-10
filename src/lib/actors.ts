@@ -52,8 +52,12 @@ export async function update(id: number, input: Partial<ActorCreateInput>): Prom
   return count > 0
 }
 
-export function filmography(id: number): Promise<{id:number;movie:number;plays:string;genre:string}[]> {
+export function filmographyByActor(id: number): Promise<{id:number;movie:string;plays:string;genre:string}[]> {
   return knex.from('actorFilmography').where({ actor:id }).select(['id','movie','plays','genre'])
+}
+
+export function filmographyById(id: number): Promise<{id:number;movie:number;actor:number;plays:string}[]> {
+  return knex.from('movieActor').where({ id }).select(['id','movie','actor','plays'])
 }
 
 /** @returns the ID that was created */

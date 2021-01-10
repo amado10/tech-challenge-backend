@@ -34,7 +34,8 @@ describe('plugin', () => describe('actor', () => {
       lib_remove: sandbox.stub(lib, 'remove'),
       lib_create: sandbox.stub(lib, 'create'),
       lib_update: sandbox.stub(lib, 'update'),
-      lib_filmography: sandbox.stub(lib, 'filmography'),
+      lib_filmographyByActor: sandbox.stub(lib, 'filmographyByActor'),
+      lib_filmographyById: sandbox.stub(lib, 'filmographyById'),
       lib_moviesCountByGenre: sandbox.stub(lib, 'moviesCountByGenre'),
       lib_addToFilmography: sandbox.stub(lib, 'addToFilmography'),
       lib_removeFromFilmography: sandbox.stub(lib, 'removeFromFilmography'),
@@ -55,7 +56,8 @@ describe('plugin', () => describe('actor', () => {
     context.stub.lib_remove.rejects(new Error('test: provide a mock for the result'))
     context.stub.lib_create.rejects(new Error('test: provide a mock for the result'))
     context.stub.lib_update.rejects(new Error('test: provide a mock for the result'))
-    context.stub.lib_filmography.rejects(new Error('test: provide a mock for the result'))
+    context.stub.lib_filmographyByActor.rejects(new Error('test: provide a mock for the result'))
+    context.stub.lib_filmographyById.rejects(new Error('test: provide a mock for the result'))
     context.stub.lib_moviesCountByGenre.rejects(new Error('test: provide a mock for the result'))
     context.stub.lib_addToFilmography.rejects(new Error('test: provide a mock for the result'))
     context.stub.lib_removeFromFilmography.rejects(new Error('test: provide a mock for the result'))
@@ -226,7 +228,7 @@ describe('plugin', () => describe('actor', () => {
     it('returns HTTP 404 when :id is not found', async ({ context }: Flags) => {
       if(!isContext(context)) throw TypeError()
       const opts: Hapi.ServerInjectOptions = { method, url }
-      context.stub.lib_filmography.resolves(null)
+      context.stub.lib_filmographyByActor.resolves(null)
 
       const response = await context.server.inject(opts)
       expect(response.statusCode).equals(404)
@@ -236,12 +238,48 @@ describe('plugin', () => describe('actor', () => {
       if(!isContext(context)) throw TypeError()
       const opts: Hapi.ServerInjectOptions = { method, url }
       const anyResult = {'any': 'result'}
-      context.stub.lib_filmography.resolves(anyResult)
+      context.stub.lib_filmographyByActor.resolves(anyResult)
 
       const response = await context.server.inject(opts)
       expect(response.statusCode).equals(200)
 
-      sinon.assert.calledOnceWithExactly(context.stub.lib_filmography, paramId)
+      sinon.assert.calledOnceWithExactly(context.stub.lib_filmographyByActor, paramId)
+      expect(response.result).equals(anyResult)
+    })
+
+  })
+
+  describe('GET /actors/filmography/:id', () => {
+    const paramId = 123
+    const [method, url] = ['GET', `/actors/filmography/${paramId}`]
+
+    it('validates :id is numeric', async ({ context }: Flags) => {
+      if(!isContext(context)) throw TypeError()
+      const opts: Hapi.ServerInjectOptions = { method, url: 'not-a-number' }
+
+      const response = await context.server.inject(opts)
+      expect(response.statusCode).equals(400)
+    })
+
+    it('returns HTTP 404 when :id is not found', async ({ context }: Flags) => {
+      if(!isContext(context)) throw TypeError()
+      const opts: Hapi.ServerInjectOptions = { method, url }
+      context.stub.lib_filmographyById.resolves(null)
+
+      const response = await context.server.inject(opts)
+      expect(response.statusCode).equals(404)
+    })
+
+    it('returns filmography of an actor ', async ({ context }: Flags) => {
+      if(!isContext(context)) throw TypeError()
+      const opts: Hapi.ServerInjectOptions = { method, url }
+      const anyResult = {'any': 'result'}
+      context.stub.lib_filmographyById.resolves(anyResult)
+
+      const response = await context.server.inject(opts)
+      expect(response.statusCode).equals(200)
+
+      sinon.assert.calledOnceWithExactly(context.stub.lib_filmographyById, paramId)
       expect(response.result).equals(anyResult)
     })
 
