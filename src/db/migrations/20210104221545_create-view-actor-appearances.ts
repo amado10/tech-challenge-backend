@@ -3,7 +3,8 @@ import * as Knex from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.raw(`
-  CREATE VIEW actorAppearances as SELECT actor, 
+  CREATE VIEW actorFilmography as SELECT actor,
+    ma.id        AS id, 
     m.name       AS movie, 
     m.synopsis   AS synopsis, 
     m.releasedat AS releasedAt, 
@@ -18,7 +19,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.raw('DROP VIEW actorAppearances;')
+  await knex.schema.raw('DROP VIEW actorFilmography;')
 
 }
 

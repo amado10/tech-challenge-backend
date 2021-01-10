@@ -35,6 +35,6 @@ export async function create(input: MovieCreateInput): Promise<number> {
 
 /** @returns whether the ID was actually found */
 export async function update(id: number, input: Partial<MovieCreateInput>): Promise<boolean>  {
-  const count = await knex.from('movie').where({ id }).update({ input })
+  const count = await knex.from('movie').where({ id }).update(input)
   return count > 0
 }

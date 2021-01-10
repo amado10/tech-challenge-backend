@@ -168,7 +168,7 @@ async function remove(req: Request, h: ResponseToolkit, _err?: Error): Promise<L
 async function getFilmography(req: Request, _h: ResponseToolkit, _err?: Error): Promise<Lifecycle.ReturnValue> {
   const { id } = (req.params as ParamsId)
 
-  const found:{movie:number;plays:string;genre:string}[] = await actors.filmography(id)
+  const found:{id:number;movie:number;plays:string;genre:string}[] = await actors.filmography(id)
   return found || Boom.notFound()
 }
 

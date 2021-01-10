@@ -10,8 +10,8 @@ export async function up(knex: Knex): Promise<void> {
       actor    INT(10) UNSIGNED NOT NULL,
       CONSTRAINT UC_movie_actor UNIQUE (movie,actor),
       CONSTRAINT PK_movieActor__id PRIMARY KEY (id),
-      CONSTRAINT FK_movie FOREIGN KEY (movie) REFERENCES movie(id),
-      CONSTRAINT FK_actor FOREIGN KEY (actor) REFERENCES actor(id)
+      CONSTRAINT FK_movie FOREIGN KEY (movie) REFERENCES movie(id) ON DELETE CASCADE,
+      CONSTRAINT FK_actor FOREIGN KEY (actor) REFERENCES actor(id) ON DELETE CASCADE
   );`)
 }
 

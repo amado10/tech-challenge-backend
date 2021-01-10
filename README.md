@@ -119,6 +119,8 @@ Made the following assumptions:
   2. Multiple movies can have the same name.
   3. Multiple actors can have the same name.
   4. The creation of an actor filmography could be done in other ways, I just choose one of them to be able to create content.
+  5. If an actor is deleted, his filmography (appearances) are deleted as well.
+  6. If an movie is deleted, the actors appearances on the given movie are deleted as well.
 
 ### Prerequisites
 

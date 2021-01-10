@@ -48,12 +48,12 @@ export async function create(input: ActorCreateInput): Promise<number> {
 
 /** @returns whether the ID was actually found */
 export async function update(id: number, input: Partial<ActorCreateInput>): Promise<boolean>  {
-  const count = await knex.from('actor').where({ id }).update({ input })
+  const count = await knex.from('actor').where({ id }).update(input)
   return count > 0
 }
 
-export function filmography(id: number): Promise<{movie:number;plays:string;genre:string}[]> {
-  return knex.from('actorAppearances').where({ actor:id }).select(['movie','plays','genre'])
+export function filmography(id: number): Promise<{id:number;movie:number;plays:string;genre:string}[]> {
+  return knex.from('actorFilmography').where({ actor:id }).select(['id','movie','plays','genre'])
 }
 
 /** @returns the ID that was created */
@@ -74,7 +74,7 @@ export async function moviesCountByGenre(id: number): Promise<{genre:string; num
    * Unknown column 'COUNT(genre)' in 'field list'
    * So I did as a raw query so you understand the idea
   */
-  const rawQuery = `SELECT genre, count(genre) as numMovies FROM actorAppearances WHERE actor=${id} GROUP BY actor,genre ORDER BY numMovies DESC`
+  const rawQuery = `SELECT genre, count(genre) as numMovies FROM actorFilmography WHERE actor=${id} GROUP BY actor,genre ORDER BY numMovies DESC`
   const [res] = await knex.raw(rawQuery) as {genre:string; numMovies:number}[][]
   return res
 }

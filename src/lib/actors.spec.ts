@@ -82,22 +82,22 @@ describe('lib', () => describe('actor', () => {
       sinon.assert.calledOnce(context.stub.knex_first)
     })
 
-    it('returns rows from view `actorAppearances`, by `actor id`', async ({context}: Flags) => {
+    it('returns rows from view `actorFilmography`, by `actor id`', async ({context}: Flags) => {
       if(!isContext(context)) throw TypeError()
       const anyId = 123
 
       await filmography(anyId)
-      sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'actorAppearances')
+      sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'actorFilmography')
       sinon.assert.calledOnceWithExactly(context.stub.knex_where, { actor: anyId })
       sinon.assert.calledOnce(context.stub.knex_select)
     })
 
-    it('returns moviesCountByGenre from view `actorAppearances`, by `actor id`', async ({context}: Flags) => {
+    it('returns moviesCountByGenre from view `actorFilmography`, by `actor id`', async ({context}: Flags) => {
       if(!isContext(context)) throw TypeError()
       const anyId = 123
 
       await moviesCountByGenre(anyId)
-      const rawQuery = `SELECT genre, count(genre) as numMovies FROM actorAppearances WHERE actor=${anyId} GROUP BY actor,genre ORDER BY numMovies DESC`
+      const rawQuery = `SELECT genre, count(genre) as numMovies FROM actorFilmography WHERE actor=${anyId} GROUP BY actor,genre ORDER BY numMovies DESC`
       sinon.assert.calledOnceWithExactly(context.stub.knex_raw, rawQuery)
     })
 
@@ -157,7 +157,7 @@ describe('lib', () => describe('actor', () => {
       await update(anyId, anyPayload)
       sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'actor')
       sinon.assert.calledOnceWithExactly(context.stub.knex_where, { id: anyId })
-      sinon.assert.calledOnceWithExactly(context.stub.knex_update, {input:anyPayload})
+      sinon.assert.calledOnceWithExactly(context.stub.knex_update, anyPayload)
     })
 
     ; [0, 1].forEach( rows =>

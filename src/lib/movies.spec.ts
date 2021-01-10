@@ -123,7 +123,7 @@ describe('lib', () => describe('movie', () => {
       await update(anyId, anyPayload)
       sinon.assert.calledOnceWithExactly(context.stub.knex_from, 'movie')
       sinon.assert.calledOnceWithExactly(context.stub.knex_where, { id: anyId })
-      sinon.assert.calledOnceWithExactly(context.stub.knex_update, {input:anyPayload})
+      sinon.assert.calledOnceWithExactly(context.stub.knex_update, anyPayload)
     })
 
     ; [0, 1].forEach( rows =>
